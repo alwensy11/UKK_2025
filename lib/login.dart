@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kasir_pl1/admin/beranda_admin.dart';
 import 'package:kasir_pl1/petugas/beranda_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HalamanLogin extends StatelessWidget {
   HalamanLogin({super.key});
@@ -30,7 +31,7 @@ class HalamanLogin extends StatelessWidget {
 
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text('Login berhasil'),
-                backgroundColor: Colors.blueAccent));
+                backgroundColor: Colors.pinkAccent.shade100));
           } else if (role == 'petugas') {
             Navigator.pushReplacement(
                 context,
@@ -39,74 +40,82 @@ class HalamanLogin extends StatelessWidget {
 
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text('Login berhasil'),
-                backgroundColor: Colors.blueAccent));
+                backgroundColor: Colors.pinkAccent.shade100));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Username atau password salah'),
-              backgroundColor: Colors.blueAccent,
+              backgroundColor: Colors.pinkAccent.shade100,
             ));
           }
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Terjadi kesalahan, silahkan coba lagi'),
-          backgroundColor: Colors.blueAccent,
+          content: Text('Terjadi kesalahan : $e'),
+          backgroundColor: Colors.pinkAccent.shade100,
         ));
       }
     }
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.only(top: 100.0, left: 20.0, right: 20.0),
+        padding: const EdgeInsets.only(top: 75.0, left: 20.0, right: 20.0),
         child: Center(
-          child: Column(
-            children: [
-              ClipRRect(
-                child: Image.asset('assets/logo.png'),
-              ),
-              SizedBox(height: 30.0),
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0)),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                ClipRRect(
+                  child: Image.asset(
+                    'assets/logo.png',
+                    height: 250.0,
+                    width: 250.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Username wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                    labelText: 'Password',
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'Username',
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0))),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 50),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent),
-                onPressed: () {
-                  Login();
-                },
-                child: Text(
-                  'LOGIN',
-                  style: TextStyle(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.0)),
+                  ),
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Username wajib diisi';
+                  //   }
+                  //   return null;
+                  // },
                 ),
-              )
-            ],
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0))),
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Password wajib diisi';
+                  //   }
+                  //   return null;
+                  // },
+                ),
+                SizedBox(height: 50),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pinkAccent.shade100),
+                  onPressed: () {
+                    Login();
+                  },
+                  child: Text(
+                    'LOGIN',
+                    style: GoogleFonts.comfortaa(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
