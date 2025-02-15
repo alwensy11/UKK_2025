@@ -14,45 +14,49 @@ class HalamanLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Login() async {
-      try {
-        var result = await Supabase.instance.client
-            .from('user')
-            .select()
-            .eq('username', _usernameController.text)
-            .eq('password', _passwordController.text)
-            .single();
+      if (_formKey.currentState?.validate() ?? false) {
+        try {
+          var result = await Supabase.instance.client
+              .from('user')
+              .select()
+              .eq('username', _usernameController.text)
+              .eq('password', _passwordController.text)
+              .single();
 
-        if (result != result.isEmpty) {
-          String role = result['role'];
+          if (result != result.isEmpty) {
+            String role = result['role'];
 
-          if (role == 'administrator') {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => HalamanBerandaAdmin()));
+            if (role == 'administrator') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HalamanBerandaAdmin()));
 
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Login berhasil'),
-                backgroundColor: Colors.pinkAccent.shade100));
-          } else if (role == 'petugas') {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => HalamanBerandaPetugas()));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Login berhasil'),
+                  backgroundColor: Colors.pinkAccent.shade100));
+            } else if (role == 'petugas') {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HalamanBerandaPetugas()));
 
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Login berhasil'),
-                backgroundColor: Colors.pinkAccent.shade100));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Username atau password salah'),
-              backgroundColor: Colors.pinkAccent.shade100,
-            ));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Login berhasil'),
+                  backgroundColor: Colors.pinkAccent.shade100));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Username atau password salah'),
+                backgroundColor: Colors.pinkAccent.shade100,
+              ));
+            }
           }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Terjadi kesalahan : $e'),
+            backgroundColor: Colors.pinkAccent.shade100,
+          ));
         }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Terjadi kesalahan : $e'),
-          backgroundColor: Colors.pinkAccent.shade100,
-        ));
       }
     }
 
@@ -80,12 +84,12 @@ class HalamanLogin extends StatelessWidget {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0)),
                   ),
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Username wajib diisi';
-                  //   }
-                  //   return null;
-                  // },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Username wajib diisi';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 20),
                 TextFormField(
@@ -95,12 +99,12 @@ class HalamanLogin extends StatelessWidget {
                       labelText: 'Password',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0))),
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Password wajib diisi';
-                  //   }
-                  //   return null;
-                  // },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password wajib diisi';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 50),
                 ElevatedButton(

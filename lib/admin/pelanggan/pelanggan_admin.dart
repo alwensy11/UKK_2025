@@ -1,53 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:kasir_pl1/admin/user/insert_user_admin.dart';
-import 'package:kasir_pl1/admin/user/edit_user_admin.dart';
-// import 'package:kasir_pl1/admin/user/edit_user_admin.dart';
+import 'package:kasir_pl1/admin/pelanggan/insert_pelanggan_admin.dart';
+import 'package:kasir_pl1/admin/pelanggan/edit_pelanggan_admin.dart';
 
-class UserAdmin extends StatefulWidget {
-  const UserAdmin({super.key});
+class PelangganAdmin extends StatefulWidget {
+  const PelangganAdmin({super.key});
 
   @override
-  State<UserAdmin> createState() => _UserAdminState();
+  State<PelangganAdmin> createState() => _PelangganAdminState();
 }
 
-class _UserAdminState extends State<UserAdmin> {
-  List<Map<String, dynamic>> users = [];
+class _PelangganAdminState extends State<PelangganAdmin> {
+  List<Map<String, dynamic>> pelanggans = [];
 
   @override
   void initState() {
     super.initState();
-    fetchUsers();
+    fetchPelanggans();
   }
 
-  Future<void> fetchUsers() async {
-    final response = await Supabase.instance.client.from('user').select();
+  Future<void> fetchPelanggans() async {
+    final response = await Supabase.instance.client.from('pelanggan').select();
 
     setState(() {
-      users = List<Map<String, dynamic>>.from(response);
+      pelanggans = List<Map<String, dynamic>>.from(response);
     });
   }
 
-  Future<void> _deleteUsers(int id) async {
+  Future<void> _deletePelanggans(int id) async {
     try {
-      await Supabase.instance.client.from('user').delete().eq('UserID', id);
-      fetchUsers();
+      await Supabase.instance.client.from('pelanggan').delete().eq('PelangganID', id);
+      fetchPelanggans();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('User tidak ditemukan : $e'),
+          content: Text('Pelanggan tidak ditemukan : $e'),
           backgroundColor: Colors.pinkAccent.shade100));
     }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: users.isEmpty
+      body: pelanggans.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: users.length,
+              itemCount: pelanggans.length,
               itemBuilder: (context, index) {
-                final user = users[index];
+                final pelanggan = pelanggans[index];
                 return Container(
                   margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -59,11 +58,16 @@ class _UserAdminState extends State<UserAdmin> {
                       ]),
                   child: ListTile(
                     title: Text(
-                      user['username'] ?? 'Tidak ada username',
+                      pelanggan['NamaPelanggan'] ?? 'Tidak ada Nama Pelanggan',
                       style:
                           GoogleFonts.happyMonkey(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(user['role'] ?? 'Tidak ada role'),
+                    subtitle: Column(
+                      children: [
+                        Text(pelanggan['Alamat'] ?? 'Tidak ada Alamat'),
+                        Text(pelanggan['NomorTelepon'] ?? 'Tidak ada Nomor Telepon'),
+                      ],
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -72,18 +76,18 @@ class _UserAdminState extends State<UserAdmin> {
                               final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => EditUserAdmin(
-                                            username: user['username'],
-                                            password: user['password'],
-                                            role: user['role'],
+                                      builder: (context) => EditPelangganAdmin(
+                                            NamaPelanggan: pelanggan['NamaPelanggan'],
+                                            Alamat: pelanggan['Alamat'],
+                                            NomorTelepon: pelanggan['NomorTelepon'],
                                           )));
 
                               if (result != null) {
                                 setState(() {
-                                  users[index] = {
-                                    'username': result['username'],
-                                    'password': result['password'],
-                                    'role': result['role']
+                                  pelanggans[index] = {
+                                    'NamaPelanggan': result['NamaPelanggan'],
+                                    'Alamat': result['Alamat'],
+                                    'NomorTelepon': result['NomorTelepon']
                                   };
                                 });
                               }
@@ -92,7 +96,7 @@ class _UserAdminState extends State<UserAdmin> {
                             color: Colors.blue),
                         IconButton(
                             onPressed: () {
-                              _deleteUsers(user['UserID']);
+                              _deletePelanggans(pelanggan['PelangganID']);
                             },
                             icon: Icon(Icons.delete),
                             color: Colors.red)
@@ -104,9 +108,9 @@ class _UserAdminState extends State<UserAdmin> {
       floatingActionButton: ElevatedButton(
           onPressed: () async {
             final result = await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InsertUserAdmin()));
+                MaterialPageRoute(builder: (context) => InsertPelangganAdmin()));
             if (result == true) {
-              fetchUsers();
+              fetchPelanggans();
             }
           },
           style: ElevatedButton.styleFrom(

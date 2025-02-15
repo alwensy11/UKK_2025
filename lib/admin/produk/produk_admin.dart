@@ -25,9 +25,6 @@ class _ProdukAdminState extends State<ProdukAdmin> {
     setState(() {
       produks = List<Map<String, dynamic>>.from(response);
     });
-
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => ProdukAdmin()));
   }
 
   Future<void> _deleteProduks(int id) async {
@@ -35,17 +32,14 @@ class _ProdukAdminState extends State<ProdukAdmin> {
       await Supabase.instance.client.from('produk').delete().eq('ProdukID', id);
       fetchProduks();
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Produk tidak ditemukan : $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Produk tidak ditemukan : $e'),
+          backgroundColor: Colors.pinkAccent.shade100));
     }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.pinkAccent.shade100,
-        foregroundColor: Colors.white,
-      ),
       body: produks.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -53,9 +47,10 @@ class _ProdukAdminState extends State<ProdukAdmin> {
               itemBuilder: (context, index) {
                 final produk = produks[index];
                 return Container(
+                  margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(10.0),
                       boxShadow: [
                         BoxShadow(
                             color: Colors.pinkAccent.shade100, blurRadius: 10.0)
@@ -69,24 +64,28 @@ class _ProdukAdminState extends State<ProdukAdmin> {
                       ],
                     ),
                     trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                             onPressed: () async {
-                              //   final result = await Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //           builder: (context) => EditProdukAdmin(
-                              //               username: user['username'],
-                              //               password: user['password'])));
+                                final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditProdukAdmin(
+                                            namaProduk: produk['NamaProduk'],
+                                            harga: produk['Harga'],
+                                            stok: produk['Stok'],
+                                            )));
 
-                              // if (result != null) {
-                              //   setState(() {
-                              //     produks[index] = {
-                              //       'username' = result['username'],
-                              //       'password' = result['password']
-                              //     };
-                              //   });
-                              // }
+                              if (result != null) {
+                                setState(() {
+                                  produks[index] = {
+                                    'NamaProduk' : result['namaProduk'],
+                                    'Harga' : result['harga'],
+                                    'Stok' : result['stok'],
+                                  };
+                                });
+                              }
                             },
                             icon: Icon(Icons.edit),
                             color: Colors.blue),
@@ -103,11 +102,11 @@ class _ProdukAdminState extends State<ProdukAdmin> {
               }),
       floatingActionButton: ElevatedButton(
           onPressed: () async {
-            // final result = await Navigator.push(context,
-            //     MaterialPageRoute(builder: (context) => InsertProdukAdmin()));
-            // if (result == true) {
-            //   fetchProduks();
-            // }
+            final result = await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => InsertProdukAdmin()));
+            if (result == true) {
+              fetchProduks();
+            }
           },
           style: ElevatedButton.styleFrom(
               backgroundColor: Colors.pinkAccent.shade100),

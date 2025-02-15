@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:kasir_pl1/admin/user/insert_user_admin.dart';
-import 'package:kasir_pl1/admin/user/edit_user_admin.dart';
-// import 'package:kasir_pl1/admin/user/edit_user_admin.dart';
 
-class UserAdmin extends StatefulWidget {
-  const UserAdmin({super.key});
+class RiwayatAdmin extends StatefulWidget {
+  const RiwayatAdmin({super.key});
 
   @override
-  State<UserAdmin> createState() => _UserAdminState();
+  State<RiwayatAdmin> createState() => _RiwayatAdminState();
 }
 
-class _UserAdminState extends State<UserAdmin> {
+class _RiwayatAdminState extends State<RiwayatAdmin> {
   List<Map<String, dynamic>> users = [];
 
   @override
@@ -68,29 +65,6 @@ class _UserAdminState extends State<UserAdmin> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                            onPressed: () async {
-                              final result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditUserAdmin(
-                                            username: user['username'],
-                                            password: user['password'],
-                                            role: user['role'],
-                                          )));
-
-                              if (result != null) {
-                                setState(() {
-                                  users[index] = {
-                                    'username': result['username'],
-                                    'password': result['password'],
-                                    'role': result['role']
-                                  };
-                                });
-                              }
-                            },
-                            icon: Icon(Icons.edit),
-                            color: Colors.blue),
-                        IconButton(
                             onPressed: () {
                               _deleteUsers(user['UserID']);
                             },
@@ -101,20 +75,6 @@ class _UserAdminState extends State<UserAdmin> {
                   ),
                 );
               }),
-      floatingActionButton: ElevatedButton(
-          onPressed: () async {
-            final result = await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InsertUserAdmin()));
-            if (result == true) {
-              fetchUsers();
-            }
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pinkAccent.shade100),
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-          )),
     );
   }
 }

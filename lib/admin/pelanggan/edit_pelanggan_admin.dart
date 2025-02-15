@@ -1,80 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/user/user_admin.dart';
+import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EditUserAdmin extends StatefulWidget {
-  final String username;
-  final String password;
-  final String role;
+class EditPelangganAdmin extends StatefulWidget {
+  final String NamaPelanggan;
+  final String Alamat;
+  final String NomorTelepon;
 
-  const EditUserAdmin({
+  const EditPelangganAdmin({
     Key? key,
-    required this.username,
-    required this.password,
-    required this.role,
+    required this.NamaPelanggan,
+    required this.Alamat,
+    required this.NomorTelepon,
   }) : super(key: key);
 
   @override
-  State<EditUserAdmin> createState() => _EditUserAdminState();
+  State<EditPelangganAdmin> createState() => _EditPelangganAdminState();
 }
 
-class _EditUserAdminState extends State<EditUserAdmin> {
+class _EditPelangganAdminState extends State<EditPelangganAdmin> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController usernameController;
-  late TextEditingController passwordController;
-  late TextEditingController roleController;
+  late TextEditingController NamaPelangganController;
+  late TextEditingController AlamatController;
+  late TextEditingController NomorTeleponController;
 
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController(text: widget.username);
-    passwordController = TextEditingController(text: widget.password);
-    roleController = TextEditingController(text: widget.role);
+    NamaPelangganController = TextEditingController(text: widget.NamaPelanggan);
+    AlamatController = TextEditingController(text: widget.Alamat);
+    NomorTeleponController = TextEditingController(text: widget.NomorTelepon);
   }
 
   @override
   void dispose() {
     super.initState();
-    usernameController.dispose();
-    passwordController.dispose();
-    roleController.dispose();
+    NamaPelangganController.dispose();
+    AlamatController.dispose();
+    NomorTeleponController.dispose();
     super.dispose();
   }
 
-  Future<void> EditUser() async {
+  Future<void> EditPelanggan() async {
     final response = await Supabase.instance.client
-        .from('user')
+        .from('pelanggan')
         .update({
-          'username': usernameController.text,
-          'password': passwordController.text,
-          'role': roleController.text
+          'NamaPelanggan': NamaPelangganController.text,
+          'Alamat': AlamatController.text,
+          'NomorTelepon': NomorTeleponController.text
         })
-        .eq('username', widget.username)
+        .eq('NamaPelanggan', widget.NamaPelanggan)
         .select();
 
     if (response == null) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UserAdmin()));
+          context, MaterialPageRoute(builder: (context) => PelangganAdmin()));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('User berhasil diperbarui'),
+        content: Text('pelanggan berhasil diperbarui'),
         backgroundColor: Colors.pinkAccent.shade100,
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Gagal memperbarui user'),
+        content: Text('Gagal memperbarui pelanggan'),
         backgroundColor: Colors.pinkAccent.shade100,
       ));
     }
   }
 
-  Future<void> simpanUser() async {
+  Future<void> simpanpelanggan() async {
     if (_formKey.currentState!.validate()) {
-      await EditUser();
+      await EditPelanggan();
 
       Navigator.pop(context, {
-        'username': usernameController.text,
-        'password': passwordController.text,
-        'role': roleController.text,
+        'NamaPelanggan': NamaPelangganController.text,
+        'Alamat': AlamatController.text,
+        'NomorTelepon': NomorTeleponController.text,
       });
     }
   }
@@ -85,7 +85,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent.shade100,
         foregroundColor: Colors.white,
-        title: Text('Edit User'),
+        title: Text('Edit pelanggan'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 75.0, left: 30.0, right: 30.0),
@@ -95,33 +95,33 @@ class _EditUserAdminState extends State<EditUserAdmin> {
             child: Column(
               children: [
                 TextFormField(
-                  controller: usernameController,
-                  decoration: InputDecoration(labelText: 'Username'),
+                  controller: NamaPelangganController,
+                  decoration: InputDecoration(labelText: 'Nama Pelanggan'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Username wajib diisi';
+                      return 'Nama Pelanggan wajib diisi';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  controller: AlamatController,
+                  decoration: InputDecoration(labelText: 'Alamat'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Password wajib diisi';
+                      return 'Alamat wajib diisi';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: roleController,
-                  decoration: InputDecoration(labelText: 'Role'),
+                  controller: NomorTeleponController,
+                  decoration: InputDecoration(labelText: 'Nomor Telepon'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Role wajib diisi';
+                      return 'Nomor Telepon wajib diisi';
                     }
                     return null;
                   },
@@ -131,7 +131,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent.shade100),
                   onPressed: () {
-                    simpanUser();
+                    simpanpelanggan();
                   },
                   child: Text(
                     'Simpan',
