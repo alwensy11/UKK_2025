@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
-import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
+import 'package:kasir_pl1/petugas/pelanggan/pelanggan_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class InsertPelangganAdmin extends StatefulWidget {
-  const InsertPelangganAdmin({super.key});
+class InsertPelangganPetugas extends StatefulWidget {
+  const InsertPelangganPetugas({super.key});
 
   @override
-  State<InsertPelangganAdmin> createState() => _InsertPelangganAdminState();
+  State<InsertPelangganPetugas> createState() => _InsertPelangganPetugasState();
 }
 
-class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
+class _InsertPelangganPetugasState extends State<InsertPelangganPetugas> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController NamaPelangganController = TextEditingController();
   final TextEditingController AlamatController = TextEditingController();
@@ -35,7 +34,7 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
 
           if (response == null) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HalamanBerandaAdmin()));
+                MaterialPageRoute(builder: (context) => PelangganPetugas()));
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Pelanggan berhasil ditambahkan'),
               backgroundColor: Colors.pinkAccent.shade100,

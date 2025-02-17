@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
-import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
+import 'package:kasir_pl1/petugas/pelanggan/pelanggan_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EditPelangganAdmin extends StatefulWidget {
+class EditPelangganPetugas extends StatefulWidget {
   final String NamaPelanggan;
   final String Alamat;
   final String NomorTelepon;
 
-  const EditPelangganAdmin({
+  const EditPelangganPetugas({
     Key? key,
     required this.NamaPelanggan,
     required this.Alamat,
@@ -16,10 +15,10 @@ class EditPelangganAdmin extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<EditPelangganAdmin> createState() => _EditPelangganAdminState();
+  State<EditPelangganPetugas> createState() => _EditPelangganPetugasState();
 }
 
-class _EditPelangganAdminState extends State<EditPelangganAdmin> {
+class _EditPelangganPetugasState extends State<EditPelangganPetugas> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController NamaPelangganController;
   late TextEditingController AlamatController;
@@ -55,7 +54,7 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
 
     if (response == null) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PelangganAdmin()));
+          context, MaterialPageRoute(builder: (context) => PelangganPetugas()));
           
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Gagal memperbarui pelanggan'),

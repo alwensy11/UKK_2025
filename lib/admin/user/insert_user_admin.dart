@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kasir_pl1/admin/beranda_admin.dart';
 import 'package:kasir_pl1/admin/user/user_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -37,7 +38,7 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
 
           if (response == null) {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => UserAdmin()));
+                context, MaterialPageRoute(builder: (context) => HalamanBerandaAdmin()));
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('User berhasil ditambahkan'),
               backgroundColor: Colors.pinkAccent.shade100,

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
-import 'package:kasir_pl1/admin/produk/produk_admin.dart';
+import 'package:kasir_pl1/petugas/produk/produk_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class InsertProdukAdmin extends StatefulWidget {
-  const InsertProdukAdmin({super.key});
+class InsertProdukPetugas extends StatefulWidget {
+  const InsertProdukPetugas({super.key});
 
   @override
-  State<InsertProdukAdmin> createState() => _InsertProdukAdminState();
+  State<InsertProdukPetugas> createState() => _InsertProdukPetugasState();
 }
 
-class _InsertProdukAdminState extends State<InsertProdukAdmin> {
+class _InsertProdukPetugasState extends State<InsertProdukPetugas> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController namaProdukController = TextEditingController();
   final TextEditingController hargaController = TextEditingController();
@@ -31,7 +30,7 @@ class _InsertProdukAdminState extends State<InsertProdukAdmin> {
 
           if (response == null) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HalamanBerandaAdmin()));
+                MaterialPageRoute(builder: (context) => ProdukPetugas()));
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Produk berhasil ditambahkan'),
               backgroundColor: Colors.pinkAccent.shade100,

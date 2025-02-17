@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
-import 'package:kasir_pl1/admin/produk/produk_admin.dart';
+import 'package:kasir_pl1/petugas/produk/produk_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EditProdukAdmin extends StatefulWidget {
+class EditProdukPetugas extends StatefulWidget {
   final String namaProduk;
   final double harga;
   final int stok;
 
-  const EditProdukAdmin({
+  const EditProdukPetugas({
     Key? key,
     required this.namaProduk,
     required this.harga,
@@ -16,10 +15,10 @@ class EditProdukAdmin extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<EditProdukAdmin> createState() => _EditProdukAdminState();
+  State<EditProdukPetugas> createState() => _EditProdukPetugasState();
 }
 
-class _EditProdukAdminState extends State<EditProdukAdmin> {
+class _EditProdukPetugasState extends State<EditProdukPetugas> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController namaProdukController;
   late TextEditingController hargaController;
@@ -42,7 +41,7 @@ class _EditProdukAdminState extends State<EditProdukAdmin> {
     super.dispose();
   }
 
-  Future<void> EditUser() async {
+  Future<void> EditProduk() async {
     if (_formKey.currentState?.validate() ?? false) {
       final response = await Supabase.instance.client
           .from('produk')
@@ -56,7 +55,7 @@ class _EditProdukAdminState extends State<EditProdukAdmin> {
 
       if (response == null) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ProdukAdmin()));
+            context, MaterialPageRoute(builder: (context) => ProdukPetugas()));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Gagal memperbarui produk'),
             backgroundColor: Colors.pinkAccent.shade100));
@@ -68,9 +67,9 @@ class _EditProdukAdminState extends State<EditProdukAdmin> {
     }
   }
 
-  Future<void> simpanUser() async {
+  Future<void> simpanProduk() async {
     if (_formKey.currentState!.validate()) {
-      await EditUser();
+      await EditProduk();
 
       Navigator.pop(context, {
         'NamaProduk': namaProdukController.text,
@@ -142,7 +141,7 @@ class _EditProdukAdminState extends State<EditProdukAdmin> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent.shade100),
                   onPressed: () {
-                    simpanUser();
+                    simpanProduk();
                   },
                   child: Text(
                     'Simpan',

@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   supabase_flutter: ^2.8.3
   google_fonts: ^6.2.1
+  intl: ^0.20.2
+  flutter_native_splash: ^2.4.4
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +52,12 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+# flutter_native_splash:
+#   color: "#42a5f5"  
+#   image: assets/logo.png  
+#   android: true
+#   ios: true
 
 # The following section is specific to Flutter packages.
 flutter:

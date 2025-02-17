@@ -1,8 +1,42 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
-import 'package:kasir_pl1/petugas/beranda_petugas.dart';
+import 'package:kasir_pl1/admin/beranda_admin_aja.dart';
+import 'package:kasir_pl1/petugas/beranda_petugas_aja.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 1), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HalamanLogin()));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: ClipRRect(
+        child: Image.asset(
+          'assets/logo.png',
+          fit: BoxFit.cover,
+          height: 400.0,
+          width: 400.0,
+        ),
+      )),
+    );
+  }
+}
 
 class HalamanLogin extends StatelessWidget {
   HalamanLogin({super.key});
@@ -30,7 +64,7 @@ class HalamanLogin extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => HalamanBerandaAdmin()));
+                      builder: (context) => AwalBerandaAdmin()));
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Login berhasil'),
@@ -39,21 +73,16 @@ class HalamanLogin extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => HalamanBerandaPetugas()));
+                      builder: (context) => AwalBerandaPetugas()));
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Login berhasil'),
                   backgroundColor: Colors.pinkAccent.shade100));
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Username atau password salah'),
-                backgroundColor: Colors.pinkAccent.shade100,
-              ));
             }
           }
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Terjadi kesalahan : $e'),
+            content: Text('Username atau password salah'),
             backgroundColor: Colors.pinkAccent.shade100,
           ));
         }

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
+import 'package:kasir_pl1/petugas/beranda_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
-class InsertPenjualanAdmin extends StatefulWidget {
-  const InsertPenjualanAdmin({super.key});
+class InsertPenjualanPetugas extends StatefulWidget {
+  const InsertPenjualanPetugas({super.key});
 
   @override
-  State<InsertPenjualanAdmin> createState() => _InsertPenjualanAdminState();
+  State<InsertPenjualanPetugas> createState() => _InsertPenjualanPetugasState();
 }
 
-class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
+class _InsertPenjualanPetugasState extends State<InsertPenjualanPetugas> {
   DateTime currentDate = DateTime.now();
 
   List<Map<String, dynamic>> pelanggan = [];
@@ -109,7 +109,7 @@ class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => HalamanBerandaAdmin()), // Arahkan ke MyHomePage
+          builder: (context) => HalamanBerandaPetugas()), // Arahkan ke MyHomePage
     );
   }
 

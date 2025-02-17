@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kasir_pl1/admin/beranda_admin_aja.dart';
 import 'package:kasir_pl1/admin/produk/produk_admin.dart';
 import 'package:kasir_pl1/admin/user/user_admin.dart';
 import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
@@ -46,6 +47,26 @@ class _HalamanBerandaAdminState extends State<HalamanBerandaAdmin> {
               ),
             ),
             ListTile(
+                title: Text('Beranda',
+                    style: TextStyle(color: Colors.pinkAccent.shade100)),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AwalBerandaAdmin()));
+                },
+              ),
+            ListTile(
+              title: Text('Dashboard',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HalamanBerandaAdmin()));
+              },
+            ),
+            ListTile(
               title: Text('Logout',
                   style: TextStyle(color: Colors.pinkAccent.shade100)),
               onTap: () {
@@ -63,7 +84,7 @@ class _HalamanBerandaAdminState extends State<HalamanBerandaAdmin> {
           _selectedIndex], // Menampilkan halaman yang dipilih berdasarkan indeks
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.pinkAccent.shade100,
-        fixedColor:  Colors.pinkAccent.shade100,
+        fixedColor: Colors.pinkAccent.shade100,
         unselectedItemColor: Colors.pinkAccent.shade100,
         currentIndex: _selectedIndex, // Menyimpan halaman yang aktif
         onTap: _onItemTapped, // Menangani klik item BottomNavigationBar

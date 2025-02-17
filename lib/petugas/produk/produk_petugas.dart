@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kasir_pl1/admin/produk/insert_produk_admin.dart';
-import 'package:kasir_pl1/admin/produk/edit_produk_admin.dart';
+import 'package:kasir_pl1/petugas/produk/insert_produk_petugas.dart';
+import 'package:kasir_pl1/petugas/produk/edit_produk_petugas.dart';
 
-class ProdukAdmin extends StatefulWidget {
-  const ProdukAdmin({super.key});
+class ProdukPetugas extends StatefulWidget {
+  const ProdukPetugas({super.key});
 
   @override
-  State<ProdukAdmin> createState() => _ProdukAdminState();
+  State<ProdukPetugas> createState() => _ProdukPetugasState();
 }
 
-class _ProdukAdminState extends State<ProdukAdmin> {
+class _ProdukPetugasState extends State<ProdukPetugas> {
   List<Map<String, dynamic>> produks = [];
 
   @override
@@ -57,19 +57,17 @@ class _ProdukAdminState extends State<ProdukAdmin> {
                             color: Colors.pinkAccent.shade100, blurRadius: 10.0)
                       ]),
                   child: ListTile(
-                    title: Text(produk['NamaProduk'], style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),),
+                    title: Text(
+                      produk['NamaProduk'],
+                      style: GoogleFonts.quicksand(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                     subtitle: Column(
                       children: [
-                        Row(
-                          children: [
-                            Text('Harga : Rp. ${produk['Harga']}', style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('Stok : ${produk['Stok']}', style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
+                        Text('Harga : Rp. ${produk['Harga']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
+                        Text('Stok : ${produk['Stok']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
                       ],
                     ),
                     trailing: Row(
@@ -80,7 +78,7 @@ class _ProdukAdminState extends State<ProdukAdmin> {
                               final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => EditProdukAdmin(
+                                      builder: (context) => EditProdukPetugas(
                                             namaProduk: produk['NamaProduk'],
                                             harga: produk['Harga'],
                                             stok: produk['Stok'],
@@ -112,7 +110,7 @@ class _ProdukAdminState extends State<ProdukAdmin> {
       floatingActionButton: ElevatedButton(
           onPressed: () async {
             final result = await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InsertProdukAdmin()));
+                MaterialPageRoute(builder: (context) => InsertProdukPetugas()));
             if (result == true) {
               fetchProduks();
             }

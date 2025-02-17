@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:kasir_pl1/admin/penjualan/insert_penjualan_admin.dart';
+import 'package:kasir_pl1/petugas/penjualan/insert_penjualan_petugas.dart';
 
-class PenjualanAdmin extends StatefulWidget {
-  const PenjualanAdmin({super.key});
+class PenjualanPetugas extends StatefulWidget {
+  const PenjualanPetugas({super.key});
 
   @override
-  State<PenjualanAdmin> createState() => _PenjualanAdminState();
+  State<PenjualanPetugas> createState() => _PenjualanPetugasState();
 }
 
-class _PenjualanAdminState extends State<PenjualanAdmin> {
+class _PenjualanPetugasState extends State<PenjualanPetugas> {
   List<Map<String, dynamic>> penjualans = [];
 
   @override
@@ -49,26 +49,16 @@ class _PenjualanAdminState extends State<PenjualanAdmin> {
                   child: ListTile(
                     title: Text(
                       'Tanggal : ${penjualan['TanggalPenjualan']}',
-                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                      style: GoogleFonts.quicksand(
+                          fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     subtitle: Column(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Total Harga : ${penjualan['TotalHarga']}',
-                              style: GoogleFonts.roboto(fontSize: 14),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Nama : ${penjualan['pelanggan']['NamaPelanggan']}',
-                              style: GoogleFonts.roboto(fontSize: 14),
-                            ),
-                          ],
-                        ),
+                        Text('Total Harga : ${penjualan['TotalHarga']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
+                        Text(
+                            'Nama : ${penjualan['pelanggan']['NamaPelanggan']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
                       ],
                     ),
                     trailing: Row(
@@ -88,7 +78,7 @@ class _PenjualanAdminState extends State<PenjualanAdmin> {
             final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => InsertPenjualanAdmin()));
+                    builder: (context) => InsertPenjualanPetugas()));
             if (result == true) {
               fetchPenjualans();
             }

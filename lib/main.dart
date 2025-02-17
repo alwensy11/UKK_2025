@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kasir_pl1/admin/beranda_admin.dart';
+import 'package:kasir_pl1/admin/beranda_admin_aja.dart';
 import 'package:kasir_pl1/login.dart';
+import 'package:kasir_pl1/petugas/beranda_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 // import 'package:kasir_pl1/login.dart';
 
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HalamanBerandaAdmin()
+      home: AwalBerandaAdmin()
     );
   }
 }

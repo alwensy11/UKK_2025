@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:kasir_pl1/admin/pelanggan/insert_pelanggan_admin.dart';
-import 'package:kasir_pl1/admin/pelanggan/edit_pelanggan_admin.dart';
+import 'package:kasir_pl1/petugas/pelanggan/insert_pelanggan_petugas.dart';
+import 'package:kasir_pl1/petugas/pelanggan/edit_pelanggan_petugas.dart';
 
-class PelangganAdmin extends StatefulWidget {
-  const PelangganAdmin({super.key});
+class PelangganPetugas extends StatefulWidget {
+  const PelangganPetugas({super.key});
 
   @override
-  State<PelangganAdmin> createState() => _PelangganAdminState();
+  State<PelangganPetugas> createState() => _PelangganPetugasState();
 }
 
-class _PelangganAdminState extends State<PelangganAdmin> {
+class _PelangganPetugasState extends State<PelangganPetugas> {
   List<Map<String, dynamic>> pelanggans = [];
 
   @override
@@ -60,23 +60,17 @@ class _PelangganAdminState extends State<PelangganAdmin> {
                             color: Colors.pinkAccent.shade100, blurRadius: 10.0)
                       ]),
                   child: ListTile(
-                    title: Text(pelanggan['NamaPelanggan'],
-                        style: GoogleFonts.quicksand(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                    title: Text(
+                      pelanggan['NamaPelanggan'],
+                      style: GoogleFonts.quicksand(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                     subtitle: Column(
                       children: [
-                        Row(
-                          children: [
-                            Text('Alamat : ${pelanggan['Alamat']}',
-                                style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('No. Telp : ${pelanggan['NomorTelepon']}',
-                                style: TextStyle(fontSize: 14)),
-                          ],
-                        ),
+                        Text('Alamat : ${pelanggan['Alamat']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
+                        Text('No Telp : ${pelanggan['NomorTelepon']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
                       ],
                     ),
                     trailing: Row(
@@ -87,7 +81,8 @@ class _PelangganAdminState extends State<PelangganAdmin> {
                               final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => EditPelangganAdmin(
+                                      builder: (context) =>
+                                          EditPelangganPetugas(
                                             NamaPelanggan:
                                                 pelanggan['NamaPelanggan'],
                                             Alamat: pelanggan['Alamat'],
@@ -123,7 +118,7 @@ class _PelangganAdminState extends State<PelangganAdmin> {
             final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => InsertPelangganAdmin()));
+                    builder: (context) => InsertPelangganPetugas()));
             if (result == true) {
               fetchPelanggans();
             }

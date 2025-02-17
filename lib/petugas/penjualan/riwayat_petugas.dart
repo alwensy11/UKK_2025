@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class RiwayatAdmin extends StatefulWidget {
-  const RiwayatAdmin({super.key});
+class RiwayatPetugas extends StatefulWidget {
+  const RiwayatPetugas({super.key});
 
   @override
-  State<RiwayatAdmin> createState() => _RiwayatAdminState();
+  State<RiwayatPetugas> createState() => _RiwayatPetugasState();
 }
 
-class _RiwayatAdminState extends State<RiwayatAdmin> {
+class _RiwayatPetugasState extends State<RiwayatPetugas> {
   List<Map<String, dynamic>> detail_penjualans = [];
   List<Map<String, dynamic>> penjualans = [];
 
@@ -25,7 +25,7 @@ class _RiwayatAdminState extends State<RiwayatAdmin> {
           .from('detailpenjualan')
           .select('*,penjualan(*,pelanggan(*)),produk(*)');
       setState(() {
-        detail_penjualans = List<Map<String, dynamic>>.from(response);
+        detail_penjualans = List<Map<String, dynamic>>.from(response ?? []);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,19 +68,14 @@ class _RiwayatAdminState extends State<RiwayatAdmin> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tanggal : ${detail_penjualann['penjualan']['TanggalPenjualan']}',
-                          style: GoogleFonts.roboto(
-                              fontSize: 14),
-                        ),
-                        Text(
                             'Nama Produk : ${detail_penjualann['produk']['NamaProduk']}',
                             style: GoogleFonts.roboto(fontSize: 14)),
                         Text(
-                          'Jumlah Produk : ${detail_penjualann['JumlahProduk'] ?? 'Jumlah Produk tidak tersedia'}',
+                          'Jumlah Produk : ${detail_penjualann['JumlahProduk']}',
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
                         Text(
-                          'Subtotal : Rp ${detail_penjualann['Subtotal'] ?? 'Subtotal tidak tersedia'}',
+                          'Subtotal : Rp ${detail_penjualann['Subtotal']}',
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
                       ],

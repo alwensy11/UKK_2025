@@ -55,13 +55,14 @@ class _EditUserAdminState extends State<EditUserAdmin> {
     if (response == null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => UserAdmin()));
+          
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('User berhasil diperbarui'),
+        content: Text('Gagal memperbarui user'),
         backgroundColor: Colors.pinkAccent.shade100,
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Gagal memperbarui user'),
+        content: Text('User berhasil diperbarui'),
         backgroundColor: Colors.pinkAccent.shade100,
       ));
     }

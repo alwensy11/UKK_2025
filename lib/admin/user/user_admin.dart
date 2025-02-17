@@ -59,11 +59,11 @@ class _UserAdminState extends State<UserAdmin> {
                       ]),
                   child: ListTile(
                     title: Text(
-                      user['username'] ?? 'Tidak ada username',
+                      user['username'],
                       style:
-                          GoogleFonts.happyMonkey(fontWeight: FontWeight.bold),
+                          GoogleFonts.quicksand(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
-                    subtitle: Text(user['role'] ?? 'Tidak ada role'),
+                    subtitle: Text(user['role'], style: TextStyle(fontSize: 14)),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
