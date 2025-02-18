@@ -26,7 +26,9 @@ class _InsertPelangganPetugasState extends State<InsertPelangganPetugas> {
         if (NamaPelanggan.isNotEmpty &&
             Alamat.isNotEmpty &&
             NomorTelepon.isNotEmpty) {
-          final response = await Supabase.instance.client.from('pelanggan').insert({
+          final response = await Supabase.instance.client
+              .from('pelanggan')
+              .insert({
             'NamaPelanggan': NamaPelanggan,
             'Alamat': Alamat,
             'NomorTelepon': NomorTelepon

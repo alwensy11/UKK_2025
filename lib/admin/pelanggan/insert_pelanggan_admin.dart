@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
 import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,7 +26,9 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
         if (NamaPelanggan.isNotEmpty &&
             Alamat.isNotEmpty &&
             NomorTelepon.isNotEmpty) {
-          final response = await Supabase.instance.client.from('pelanggan').insert({
+          final response = await Supabase.instance.client
+              .from('pelanggan')
+              .insert({
             'NamaPelanggan': NamaPelanggan,
             'Alamat': Alamat,
             'NomorTelepon': NomorTelepon
@@ -35,7 +36,7 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
 
           if (response == null) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HalamanBerandaAdmin()));
+                MaterialPageRoute(builder: (context) => PelangganAdmin()));
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Pelanggan berhasil ditambahkan'),
               backgroundColor: Colors.pinkAccent.shade100,

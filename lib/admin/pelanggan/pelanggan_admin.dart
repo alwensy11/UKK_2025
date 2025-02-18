@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:kasir_pl1/admin/beranda_admin.dart';
+import 'package:kasir_pl1/admin/penjualan/penjualan_admin.dart';
+import 'package:kasir_pl1/admin/penjualan/riwayat_admin.dart';
+import 'package:kasir_pl1/admin/produk/produk_admin.dart';
+import 'package:kasir_pl1/admin/user/user_admin.dart';
+import 'package:kasir_pl1/login.dart';
 import 'package:kasir_pl1/admin/pelanggan/insert_pelanggan_admin.dart';
 import 'package:kasir_pl1/admin/pelanggan/edit_pelanggan_admin.dart';
 
@@ -13,11 +19,14 @@ class PelangganAdmin extends StatefulWidget {
 
 class _PelangganAdminState extends State<PelangganAdmin> {
   List<Map<String, dynamic>> pelanggans = [];
+  List<Map<String, dynamic>> filteredPelanggan = [];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchPelanggans();
+    searchController.addListener(_searchPelanggan);
   }
 
   Future<void> fetchPelanggans() async {
@@ -25,6 +34,18 @@ class _PelangganAdminState extends State<PelangganAdmin> {
 
     setState(() {
       pelanggans = List<Map<String, dynamic>>.from(response);
+      filteredPelanggan = List.from(pelanggans);
+    });
+  }
+
+  Future<void> _searchPelanggan() async {
+    final query = searchController.text.toLowerCase();
+
+    setState(() {
+      filteredPelanggan = pelanggans.where((pelanggan) {
+        final NamaPelanggan = pelanggan['NamaPelanggan'].toLowerCase();
+        return NamaPelanggan.contains(query);
+      }).toList();
     });
   }
 
@@ -42,14 +63,98 @@ class _PelangganAdminState extends State<PelangganAdmin> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pelanggans.isEmpty
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: ClipRRect(
+                child: Image.asset('assets/logo.png'),
+              ),
+            ),
+            ListTile(
+              title: Text('Beranda',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HalamanBerandaAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('User',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UserAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Produk',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProdukAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Pelanggan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PelangganAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Penjualan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PenjualanAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Riwayat Penjualan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RiwayatAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Logout',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HalamanLogin()));
+              },
+            )
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.pinkAccent.shade100,
+        foregroundColor: Colors.white,
+        title: TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            hintText: 'Cari Produk...',
+            hintStyle: TextStyle(color: Colors.white),
+            border: InputBorder.none,
+            icon: Icon(Icons.search, color: Colors.white),
+          ),
+        ),
+      ),
+      body: filteredPelanggan.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: pelanggans.length,
+              itemCount: filteredPelanggan.length,
               itemBuilder: (context, index) {
-                final pelanggan = pelanggans[index];
+                final pelanggan = filteredPelanggan[index];
                 return Container(
                   margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(

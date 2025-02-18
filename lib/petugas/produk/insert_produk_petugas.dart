@@ -23,21 +23,43 @@ class _InsertProdukPetugasState extends State<InsertProdukPetugas> {
         String harga = hargaController.text;
         String stok = stokController.text;
 
-        if (namaProduk.isNotEmpty && harga.isNotEmpty && stok.isNotEmpty) {
-          final response = await Supabase.instance.client
-              .from('produk')
-              .insert({'NamaProduk': namaProduk, 'Harga': harga, 'Stok': stok});
+        if (namaProduk.isEmpty || harga.isEmpty || stok.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Semua wajib diisi'),
+            backgroundColor: Colors.pinkAccent.shade100,
+          ));
+          return;
+        }
 
-          if (response == null) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ProdukPetugas()));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Produk berhasil ditambahkan'),
-              backgroundColor: Colors.pinkAccent.shade100,
-            ));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error: ${response.error!.message}')));
+        final cekProduk = await Supabase.instance.client
+            .from('produk')
+            .select()
+            .eq('NamaProduk', namaProduk)
+            .single();
+
+        if (cekProduk.error == null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Produk sudah ada'),
+            backgroundColor: Colors.pinkAccent.shade100,
+          ));
+        } else {
+          if (namaProduk.isNotEmpty && harga.isNotEmpty && stok.isNotEmpty) {
+            final response = await Supabase.instance.client
+                .from('produk')
+                .insert(
+                    {'NamaProduk': namaProduk, 'Harga': harga, 'Stok': stok});
+
+            if (response == null) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProdukPetugas()));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Produk berhasil ditambahkan'),
+                backgroundColor: Colors.pinkAccent.shade100,
+              ));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: ${response.error!.message}')));
+            }
           }
         }
       }
@@ -115,4 +137,8 @@ class _InsertProdukPetugasState extends State<InsertProdukPetugas> {
       ),
     );
   }
+}
+
+extension on PostgrestMap {
+  get error => null;
 }

@@ -41,7 +41,7 @@ class _EditProdukPetugasState extends State<EditProdukPetugas> {
     super.dispose();
   }
 
-  Future<void> EditProduk() async {
+  Future<void> EditUser() async {
     if (_formKey.currentState?.validate() ?? false) {
       final response = await Supabase.instance.client
           .from('produk')
@@ -67,9 +67,9 @@ class _EditProdukPetugasState extends State<EditProdukPetugas> {
     }
   }
 
-  Future<void> simpanProduk() async {
+  Future<void> simpanUser() async {
     if (_formKey.currentState!.validate()) {
-      await EditProduk();
+      await EditUser();
 
       Navigator.pop(context, {
         'NamaProduk': namaProdukController.text,
@@ -141,7 +141,7 @@ class _EditProdukPetugasState extends State<EditProdukPetugas> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent.shade100),
                   onPressed: () {
-                    simpanProduk();
+                    simpanUser();
                   },
                   child: Text(
                     'Simpan',

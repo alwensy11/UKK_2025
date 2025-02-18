@@ -55,7 +55,7 @@ class _EditPelangganPetugasState extends State<EditPelangganPetugas> {
     if (response == null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => PelangganPetugas()));
-          
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Gagal memperbarui pelanggan'),
         backgroundColor: Colors.pinkAccent.shade100,

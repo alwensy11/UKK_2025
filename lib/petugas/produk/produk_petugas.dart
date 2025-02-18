@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kasir_pl1/petugas/beranda_petugas.dart';
+import 'package:kasir_pl1/petugas/pelanggan/pelanggan_petugas.dart';
+import 'package:kasir_pl1/petugas/penjualan/penjualan_petugas.dart';
+import 'package:kasir_pl1/petugas/penjualan/riwayat_petugas.dart';
+import 'package:kasir_pl1/petugas/user/user_petugas.dart';
+import 'package:kasir_pl1/login.dart';
 import 'package:kasir_pl1/petugas/produk/insert_produk_petugas.dart';
 import 'package:kasir_pl1/petugas/produk/edit_produk_petugas.dart';
 
@@ -13,11 +19,14 @@ class ProdukPetugas extends StatefulWidget {
 
 class _ProdukPetugasState extends State<ProdukPetugas> {
   List<Map<String, dynamic>> produks = [];
+  List<Map<String, dynamic>> filteredProduk = [];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchProduks();
+    searchController.addListener(_searchProduk);
   }
 
   Future<void> fetchProduks() async {
@@ -25,6 +34,18 @@ class _ProdukPetugasState extends State<ProdukPetugas> {
 
     setState(() {
       produks = List<Map<String, dynamic>>.from(response);
+      filteredProduk = List.from(produks); 
+    });
+  }
+
+  Future<void> _searchProduk() async {
+    final query = searchController.text.toLowerCase();
+
+    setState(() {
+      filteredProduk = produks.where((produk) {
+        final NamaProduk = produk['NamaProduk'].toLowerCase();
+        return NamaProduk.contains(query);
+      }).toList();
     });
   }
 
@@ -39,14 +60,102 @@ class _ProdukPetugasState extends State<ProdukPetugas> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: produks.isEmpty
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: ClipRRect(
+                child: Image.asset('assets/logo.png'),
+              ),
+            ),
+            ListTile(
+              title: Text('Beranda',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HalamanBerandaPetugas()));
+              },
+            ),
+            ListTile(
+              title: Text('User',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UserPetugas()));
+              },
+            ),
+            ListTile(
+              title: Text('Produk',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProdukPetugas()));
+              },
+            ),
+            ListTile(
+              title: Text('Pelanggan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PelangganPetugas()));
+              },
+            ),
+            ListTile(
+              title: Text('Penjualan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PenjualanPetugas()));
+              },
+            ),
+            ListTile(
+              title: Text('Riwayat Penjualan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RiwayatPetugas()));
+              },
+            ),
+            ListTile(
+              title: Text('Logout',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HalamanLogin()));
+              },
+            )
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.pinkAccent.shade100,
+        foregroundColor: Colors.white,
+        title: TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            hintText: 'Cari Produk...',
+            hintStyle: TextStyle(color: Colors.white),
+            border: InputBorder.none,
+            icon: Icon(Icons.search, color: Colors.white),
+          ),
+        ),
+      ),
+      body: filteredProduk.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: produks.length,
+              itemCount: filteredProduk.length,
               itemBuilder: (context, index) {
-                final produk = produks[index];
+                final produk = filteredProduk[index];
                 return Container(
                   margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -59,15 +168,22 @@ class _ProdukPetugasState extends State<ProdukPetugas> {
                   child: ListTile(
                     title: Text(
                       produk['NamaProduk'],
-                      style: GoogleFonts.quicksand(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       children: [
-                        Text('Harga : Rp. ${produk['Harga']}',
-                            style: GoogleFonts.roboto(fontSize: 14)),
-                        Text('Stok : ${produk['Stok']}',
-                            style: GoogleFonts.roboto(fontSize: 14)),
+                        Row(
+                          children: [
+                            Text('Harga : Rp. ${produk['Harga']}',
+                                style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text('Stok : ${produk['Stok']}',
+                                style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                       ],
                     ),
                     trailing: Row(

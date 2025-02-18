@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin_aja.dart';
-import 'package:kasir_pl1/petugas/beranda_petugas_aja.dart';
+import 'package:kasir_pl1/admin/beranda_admin.dart';
+import 'package:kasir_pl1/petugas/beranda_petugas.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 1), () {
+    Timer(Duration(seconds: 2), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HalamanLogin()));
     });
@@ -64,7 +64,7 @@ class HalamanLogin extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AwalBerandaAdmin()));
+                      builder: (context) => HalamanBerandaAdmin()));
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Login berhasil'),
@@ -73,7 +73,7 @@ class HalamanLogin extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AwalBerandaPetugas()));
+                      builder: (context) => HalamanBerandaPetugas()));
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Login berhasil'),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
 import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -56,7 +55,7 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
     if (response == null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => PelangganAdmin()));
-          
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Gagal memperbarui pelanggan'),
         backgroundColor: Colors.pinkAccent.shade100,

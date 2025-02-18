@@ -19,17 +19,19 @@ class EditUserAdmin extends StatefulWidget {
 }
 
 class _EditUserAdminState extends State<EditUserAdmin> {
+  String? _pilihRole;
+
+  final List<String> _roles = ['administrator', 'petugas'];
+
   final _formKey = GlobalKey<FormState>();
   late TextEditingController usernameController;
   late TextEditingController passwordController;
-  late TextEditingController roleController;
 
   @override
   void initState() {
     super.initState();
     usernameController = TextEditingController(text: widget.username);
     passwordController = TextEditingController(text: widget.password);
-    roleController = TextEditingController(text: widget.role);
   }
 
   @override
@@ -37,7 +39,6 @@ class _EditUserAdminState extends State<EditUserAdmin> {
     super.initState();
     usernameController.dispose();
     passwordController.dispose();
-    roleController.dispose();
     super.dispose();
   }
 
@@ -47,7 +48,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
         .update({
           'username': usernameController.text,
           'password': passwordController.text,
-          'role': roleController.text
+          'role': _pilihRole
         })
         .eq('username', widget.username)
         .select();
@@ -55,7 +56,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
     if (response == null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => UserAdmin()));
-          
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Gagal memperbarui user'),
         backgroundColor: Colors.pinkAccent.shade100,
@@ -75,7 +76,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
       Navigator.pop(context, {
         'username': usernameController.text,
         'password': passwordController.text,
-        'role': roleController.text,
+        'role': _pilihRole,
       });
     }
   }
@@ -117,15 +118,20 @@ class _EditUserAdminState extends State<EditUserAdmin> {
                   },
                 ),
                 SizedBox(height: 20),
-                TextFormField(
-                  controller: roleController,
-                  decoration: InputDecoration(labelText: 'Role'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Role wajib diisi';
-                    }
-                    return null;
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(labelText: 'Pilih Role'),
+                  value: _pilihRole, 
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _pilihRole = newValue;
+                    });
                   },
+                  items: _roles.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text('${value}'),
+                    );
+                  }).toList(),
                 ),
                 SizedBox(height: 50),
                 ElevatedButton(

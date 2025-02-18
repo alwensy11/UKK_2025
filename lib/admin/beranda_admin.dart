@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin_aja.dart';
-import 'package:kasir_pl1/admin/produk/produk_admin.dart';
-import 'package:kasir_pl1/admin/user/user_admin.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kasir_pl1/admin/pelanggan/pelanggan_admin.dart';
 import 'package:kasir_pl1/admin/penjualan/penjualan_admin.dart';
 import 'package:kasir_pl1/admin/penjualan/riwayat_admin.dart';
+import 'package:kasir_pl1/admin/produk/produk_admin.dart';
+import 'package:kasir_pl1/admin/user/user_admin.dart';
 import 'package:kasir_pl1/login.dart';
 
 class HalamanBerandaAdmin extends StatefulWidget {
@@ -15,55 +15,76 @@ class HalamanBerandaAdmin extends StatefulWidget {
 }
 
 class _HalamanBerandaAdminState extends State<HalamanBerandaAdmin> {
-  // Menyimpan indeks halaman yang dipilih
-  int _selectedIndex = 0;
-
-  // Daftar halaman untuk Bottom Navigation
-  final List<Widget> _pages = [
-    UserAdmin(), // Halaman User Admin
-    ProdukAdmin(), // Halaman Produk Admin
-    PelangganAdmin(),
-    PenjualanAdmin(),
-    RiwayatAdmin(),
-  ];
-
-  // Fungsi untuk menangani perubahan halaman saat item Bottom Navigation dipilih
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index; // Mengubah halaman yang dipilih
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: ClipRRect(
-                child: Image.asset('assets/logo.png'),
+        drawer: Drawer(
+          backgroundColor: Colors.white,
+          child: ListView(
+            children: [
+              DrawerHeader(
+                child: ClipRRect(
+                  child: Image.asset('assets/logo.png'),
+                ),
               ),
-            ),
-            ListTile(
+              ListTile(
                 title: Text('Beranda',
                     style: TextStyle(color: Colors.pinkAccent.shade100)),
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AwalBerandaAdmin()));
+                          builder: (context) => HalamanBerandaAdmin()));
                 },
               ),
             ListTile(
-              title: Text('Dashboard',
+              title: Text('User',
                   style: TextStyle(color: Colors.pinkAccent.shade100)),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => HalamanBerandaAdmin()));
+                        builder: (context) => UserAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Produk',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProdukAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Pelanggan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PelangganAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Penjualan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PenjualanAdmin()));
+              },
+            ),
+            ListTile(
+              title: Text('Riwayat Penjualan',
+                  style: TextStyle(color: Colors.pinkAccent.shade100)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RiwayatAdmin()));
               },
             ),
             ListTile(
@@ -74,43 +95,25 @@ class _HalamanBerandaAdminState extends State<HalamanBerandaAdmin> {
                     MaterialPageRoute(builder: (context) => HalamanLogin()));
               },
             )
-          ],
+            ],
+          ),
         ),
-      ),
-      appBar: AppBar(
-          backgroundColor: Colors.pinkAccent.shade100,
-          foregroundColor: Colors.white),
-      body: _pages[
-          _selectedIndex], // Menampilkan halaman yang dipilih berdasarkan indeks
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.pinkAccent.shade100,
-        fixedColor: Colors.pinkAccent.shade100,
-        unselectedItemColor: Colors.pinkAccent.shade100,
-        currentIndex: _selectedIndex, // Menyimpan halaman yang aktif
-        onTap: _onItemTapped, // Menangani klik item BottomNavigationBar
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'User',
+        appBar: AppBar(
+            backgroundColor: Colors.pinkAccent.shade100,
+            foregroundColor: Colors.white),
+        body: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  child: Image.asset('assets/logo.png', fit: BoxFit.cover, height: 300.0, width: 300.0,),
+                ),
+                Text('Selamat Datang', style: GoogleFonts.lilitaOne(color: Colors.pinkAccent.shade100, fontWeight: FontWeight.bold, fontSize: 40),),
+                Text(' Di Aplikasi Kasir Toko Donat', style: GoogleFonts.lilitaOne(color: Colors.pinkAccent.shade100, fontWeight: FontWeight.bold, fontSize: 25),)
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cake),
-            label: 'Produk',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Pelanggan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Penjualan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Riwayat Penjualan',
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }

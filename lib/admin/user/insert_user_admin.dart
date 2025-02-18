@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kasir_pl1/admin/beranda_admin.dart';
 import 'package:kasir_pl1/admin/user/user_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,20 +10,22 @@ class InsertUserAdmin extends StatefulWidget {
 }
 
 class _InsertUserAdminState extends State<InsertUserAdmin> {
+  String? _pilihRole;
+
+  final List<String> _roles = ['administrator', 'petugas'];
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController roleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    Future<void> InsertProduct() async {
+    Future<void> InsertUser() async {
       if (_formKey.currentState?.validate() ?? false) {
         String username = usernameController.text;
         String password = passwordController.text;
-        String role = roleController.text;
 
-        if (username.isEmpty || password.isEmpty || role.isEmpty) {
+        if (username.isEmpty || password.isEmpty || _roles.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Semua wajib diisi'),
             backgroundColor: Colors.pinkAccent.shade100,
@@ -32,21 +33,39 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
           return;
         }
 
-        if (username.isNotEmpty && password.isNotEmpty && role.isNotEmpty) {
-          final response = await Supabase.instance.client.from('user').insert(
-              {'username': username, 'password': password, 'role': role});
+        final cekUsername = await Supabase.instance.client
+            .from('user')
+            .select()
+            .eq('username', username)
+            .single();
 
-          if (response == null) {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HalamanBerandaAdmin()));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('User berhasil ditambahkan'),
-              backgroundColor: Colors.pinkAccent.shade100,
-            ));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Error: ${response.error!.message}'),
-                backgroundColor: Colors.pinkAccent.shade100));
+        if (cekUsername.error == null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('User sudah terdaftar'),
+            backgroundColor: Colors.pinkAccent.shade100,
+          ));
+        } else {
+          if (username.isNotEmpty && password.isNotEmpty && _roles.isNotEmpty) {
+            final response = await Supabase.instance.client
+                .from('user')
+                .insert({
+              'username': username,
+              'password': password,
+              'role': _pilihRole
+            });
+
+            if (response == null) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserAdmin()));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('User berhasil ditambahkan'),
+                backgroundColor: Colors.pinkAccent.shade100,
+              ));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Error: ${response.error!.message}'),
+                  backgroundColor: Colors.pinkAccent.shade100));
+            }
           }
         }
       }
@@ -87,9 +106,20 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
                   },
                 ),
                 SizedBox(height: 20),
-                TextFormField(
-                  controller: roleController,
-                  decoration: InputDecoration(labelText: 'Role'),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(labelText: 'Pilih Role'),
+                  value: _pilihRole,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _pilihRole = newValue;
+                    });
+                  },
+                  items: _roles.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text('${value}'),
+                    );
+                  }).toList(),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Role wajib diisi';
@@ -102,7 +132,7 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent.shade100),
                   onPressed: () {
-                    InsertProduct();
+                    InsertUser();
                   },
                   child: Text(
                     'Tambah',
@@ -116,4 +146,8 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
       ),
     );
   }
+}
+
+extension on PostgrestMap {
+  get error => null;
 }
