@@ -12,7 +12,7 @@ class InsertPenjualanAdmin extends StatefulWidget {
 
 class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
   final _formKey = GlobalKey<FormState>();
-  
+
   DateTime currentDate = DateTime.now();
 
   List<Map<String, dynamic>> pelanggan = [];
@@ -22,6 +22,7 @@ class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
 
   TextEditingController quantityController = TextEditingController();
   double subtotal = 0;
+  double totalHargaAsli = 0;
   double totalHarga = 0;
   List<Map<String, dynamic>> keranjang = [];
 
@@ -49,51 +50,81 @@ class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
   Future<void> tambahKeKeranjang() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (pilihProduk != null && quantityController.text.isNotEmpty) {
-      int quantity = int.parse(quantityController.text);
-      double price = pilihProduk!['Harga'];
-      double itemSubtotal = price * quantity;
+        int quantity = int.parse(quantityController.text);
+        double price = pilihProduk!['Harga'];
+        double itemSubtotal = price * quantity;
 
-      if (pilihProduk!['Stok'] == 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Stok sudah habis'),
-            backgroundColor: Colors.pinkAccent.shade100,
-          ),
+        if (pilihProduk!['Stok'] == 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Stok sudah habis'),
+              backgroundColor: Colors.pinkAccent.shade100,
+            ),
+          );
+          return;
+        }
+
+        if (pilihProduk!['Stok'] < quantity) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Stok tidak cukup'),
+              backgroundColor: Colors.pinkAccent.shade100,
+            ),
+          );
+          return;
+        }
+
+        int existingIndex = keranjang.indexWhere(
+          (item) => item['ProdukID'] == pilihProduk!['ProdukID'],
         );
-        return;
-      }
 
-      if (pilihProduk!['Stok'] < quantity) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Stok tidak cukup'),
-            backgroundColor: Colors.pinkAccent.shade100,
-          ),
-        );
-        return;
-      }
+        if (existingIndex != -1) {
+          keranjang[existingIndex]['JumlahProduk'] += quantity;
+          keranjang[existingIndex]['Subtotal'] += itemSubtotal;
+        } else {
+          keranjang.add({
+            'ProdukID': pilihProduk!['ProdukID'],
+            'NamaProduk': pilihProduk!['NamaProduk'],
+            'JumlahProduk': quantity,
+            'Subtotal': itemSubtotal,
+          });
+        }
 
-      setState(() {
-        keranjang.add({
-          'ProdukID': pilihProduk!['ProdukID'],
-          'NamaProduk': pilihProduk!['NamaProduk'],
-          'JumlahProduk': quantity,
-          'Subtotal': itemSubtotal,
+        double tempTotalHargaAsli =
+            keranjang.fold(0, (sum, item) => sum + item['Subtotal']);
+        double tempTotalHarga = tempTotalHargaAsli;
+
+        if (pilihPelanggan != null) {
+          final memberType = pilihPelanggan!['Member'];
+
+          if (memberType == 'Platinum') {
+            tempTotalHarga *= 0.90; 
+          } else if (memberType == 'Gold') {
+            tempTotalHarga *= 0.95; 
+          } else if (memberType == 'Silver') {
+            tempTotalHarga *= 0.98; 
+          }
+        }
+
+        setState(() {
+          totalHargaAsli = tempTotalHargaAsli;
+          totalHarga = tempTotalHarga;
         });
-        totalHarga += itemSubtotal;
+
         pilihProduk!['Stok'] -= quantity;
-      });
-    }
+      }
     }
   }
 
   Future<void> SubmitPenjualan() async {
     try {
+      double finalTotalHarga = totalHarga;
+
       final penjualanResponse = await Supabase.instance.client
           .from('penjualan')
           .insert({
             'TanggalPenjualan': DateFormat('yyy-MM-dd').format(currentDate),
-            'TotalHarga': totalHarga,
+            'TotalHarga': finalTotalHarga, 
             'PelangganID': pilihPelanggan!['PelangganID']
           })
           .select()
@@ -109,18 +140,22 @@ class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
           'Subtotal': item['Subtotal']
         });
 
+        // Update stok produk
         await Supabase.instance.client.from('produk').update(
             {'Stok': pilihProduk!['Stok']}).eq('ProdukID', item['ProdukID']);
       }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Transaksi berhasil disimpan'),
           backgroundColor: Colors.pinkAccent.shade100,
         ),
       );
+
       setState(() {
         keranjang.clear();
         totalHarga = 0;
+        totalHargaAsli = 0; // Reset harga asli
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -130,6 +165,7 @@ class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
         ),
       );
     }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => PenjualanAdmin()),
@@ -233,14 +269,17 @@ class _InsertPenjualanAdminState extends State<InsertPenjualanAdmin> {
                     return ListTile(
                       title: Text(item['NamaProduk']),
                       subtitle: Text(
-                          'Jumlah: ${item['JumlahProduk']} - Subtotal: Rp ${item['Subtotal']}'),
+                          'Jumlah: ${item['JumlahProduk']} - Subtotal: Rp ${NumberFormat('#,###').format(item['Subtotal'])}'),
                     );
                   },
                 ),
               ),
               Divider(),
-              Text('Total Harga: Rp $totalHarga',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                'Total Harga Setelah Diskon: Rp ${NumberFormat('#,###').format(totalHarga)}',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: SubmitPenjualan,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kasir_pl1/petugas/beranda_petugas.dart';
@@ -34,7 +35,7 @@ class _ProdukPetugasState extends State<ProdukPetugas> {
 
     setState(() {
       produks = List<Map<String, dynamic>>.from(response);
-      filteredProduk = List.from(produks); 
+      filteredProduk = List.from(produks);
     });
   }
 
@@ -102,20 +103,16 @@ class _ProdukPetugasState extends State<ProdukPetugas> {
               title: Text('Pelanggan',
                   style: TextStyle(color: Colors.pinkAccent.shade100)),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PelangganPetugas()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PelangganPetugas()));
               },
             ),
             ListTile(
               title: Text('Penjualan',
                   style: TextStyle(color: Colors.pinkAccent.shade100)),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PenjualanPetugas()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PenjualanPetugas()));
               },
             ),
             ListTile(
@@ -174,7 +171,7 @@ class _ProdukPetugasState extends State<ProdukPetugas> {
                       children: [
                         Row(
                           children: [
-                            Text('Harga : Rp. ${produk['Harga']}',
+                            Text('Harga : Rp. ${NumberFormat('#,###').format(produk['Harga'])}',
                                 style: TextStyle(fontSize: 14)),
                           ],
                         ),

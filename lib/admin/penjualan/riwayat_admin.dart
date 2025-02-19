@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kasir_pl1/admin/beranda_admin.dart';
@@ -26,12 +27,12 @@ class _RiwayatAdminState extends State<RiwayatAdmin> {
     fetchRiwayatPenjualan();
     fetchUser();
   }
-  
+
   Future<void> fetchRiwayatPenjualan() async {
     try {
       final response = await Supabase.instance.client
           .from('detailpenjualan')
-          .select('*,penjualan(*,pelanggan(*)),produk(*)');
+          .select('*,penjualan(*,pelanggan(*)), produk(*)');
       setState(() {
         detail_penjualans = List<Map<String, dynamic>>.from(response);
       });
@@ -49,8 +50,7 @@ class _RiwayatAdminState extends State<RiwayatAdmin> {
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
       setState(() {
-        username =
-            user.email;
+        username = user.email;
       });
     }
   }
@@ -151,16 +151,16 @@ class _RiwayatAdminState extends State<RiwayatAdmin> {
                   ),
                   child: ListTile(
                     title: Text(
-                        'Nama : ${detail_penjualann['penjualan']['pelanggan']['NamaPelanggan']}',
-                        style: GoogleFonts.quicksand(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                      'Tanggal : ${detail_penjualann['penjualan']['TanggalPenjualan']}',
+                      style: GoogleFonts.quicksand(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tanggal : ${detail_penjualann['penjualan']['TanggalPenjualan']}',
-                          style: GoogleFonts.roboto(fontSize: 14),
-                        ),
+                            'Nama : ${detail_penjualann['penjualan']['pelanggan']['NamaPelanggan']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
                         Text(
                             'Nama Produk : ${detail_penjualann['produk']['NamaProduk']}',
                             style: GoogleFonts.roboto(fontSize: 14)),
@@ -169,13 +169,13 @@ class _RiwayatAdminState extends State<RiwayatAdmin> {
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
                         Text(
-                          'Subtotal : Rp ${detail_penjualann['Subtotal'] ?? 'Subtotal tidak tersedia'}',
+                          'Subtotal : Rp ${NumberFormat('#,###').format(detail_penjualann['Subtotal']) ?? 'Subtotal tidak tersedia'}',
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
-                        Text(
-                          'Nama Kasir : ${username}',
-                          style: GoogleFonts.roboto(fontSize: 14),
-                        ),
+                        // Text(
+                        //   'Nama Kasir : ${username}',
+                        //   style: GoogleFonts.roboto(fontSize: 14),
+                        // ),
                       ],
                     ),
                   ),

@@ -6,12 +6,14 @@ class EditPelangganAdmin extends StatefulWidget {
   final String NamaPelanggan;
   final String Alamat;
   final String NomorTelepon;
+  final String Member;
 
   const EditPelangganAdmin({
     Key? key,
     required this.NamaPelanggan,
     required this.Alamat,
     required this.NomorTelepon,
+    required this.Member,
   }) : super(key: key);
 
   @override
@@ -23,6 +25,7 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
   late TextEditingController NamaPelangganController;
   late TextEditingController AlamatController;
   late TextEditingController NomorTeleponController;
+  late TextEditingController MemberController;
 
   @override
   void initState() {
@@ -30,15 +33,16 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
     NamaPelangganController = TextEditingController(text: widget.NamaPelanggan);
     AlamatController = TextEditingController(text: widget.Alamat);
     NomorTeleponController = TextEditingController(text: widget.NomorTelepon);
+    MemberController = TextEditingController(text: widget.Member);
   }
 
   @override
   void dispose() {
-    super.initState();
+    super.dispose();
     NamaPelangganController.dispose();
     AlamatController.dispose();
     NomorTeleponController.dispose();
-    super.dispose();
+    MemberController.dispose();
   }
 
   Future<void> EditPelanggan() async {
@@ -47,20 +51,22 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
         .update({
           'NamaPelanggan': NamaPelangganController.text,
           'Alamat': AlamatController.text,
-          'NomorTelepon': NomorTeleponController.text
+          'NomorTelepon': NomorTeleponController.text,
+          'Member': MemberController.text,
         })
         .eq('NamaPelanggan', widget.NamaPelanggan)
         .select();
 
-    if (response == null) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PelangganAdmin()));
-
+    if (response.error != null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Gagal memperbarui pelanggan'),
         backgroundColor: Colors.pinkAccent.shade100,
       ));
     } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PelangganAdmin()),
+      );
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Pelanggan berhasil diperbarui'),
         backgroundColor: Colors.pinkAccent.shade100,
@@ -68,7 +74,7 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
     }
   }
 
-  Future<void> simpanpelanggan() async {
+  Future<void> simpanPelanggan() async {
     if (_formKey.currentState!.validate()) {
       await EditPelanggan();
 
@@ -76,6 +82,7 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
         'NamaPelanggan': NamaPelangganController.text,
         'Alamat': AlamatController.text,
         'NomorTelepon': NomorTeleponController.text,
+        'Member': MemberController.text,
       });
     }
   }
@@ -86,7 +93,7 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent.shade100,
         foregroundColor: Colors.white,
-        title: Text('Edit pelanggan'),
+        title: Text('Edit Pelanggan'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 75.0, left: 30.0, right: 30.0),
@@ -127,12 +134,23 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
                     return null;
                   },
                 ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: MemberController,
+                  decoration: InputDecoration(labelText: 'Member'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Member wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
                 SizedBox(height: 50),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent.shade100),
                   onPressed: () {
-                    simpanpelanggan();
+                    simpanPelanggan();
                   },
                   child: Text(
                     'Simpan',
@@ -146,4 +164,8 @@ class _EditPelangganAdminState extends State<EditPelangganAdmin> {
       ),
     );
   }
+}
+
+extension on PostgrestList {
+  get error => null;
 }

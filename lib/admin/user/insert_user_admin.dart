@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:kasir_pl1/admin/user/user_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,39 +34,41 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
           return;
         }
 
-        final cekUsername = await Supabase.instance.client
-            .from('user')
-            .select()
-            .eq('username', username)
-            .single();
+        try {
+          final cekUsername = await Supabase.instance.client
+              .from('user')
+              .select()
+              .eq('username', username)
+              .single();
 
-        if (cekUsername.error == null) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('User sudah terdaftar'),
             backgroundColor: Colors.pinkAccent.shade100,
           ));
-        } else {
-          if (username.isNotEmpty && password.isNotEmpty && _roles.isNotEmpty) {
-            final response = await Supabase.instance.client
-                .from('user')
-                .insert({
+        } catch (e) {
+          try {
+            String encodedPassword = base64Encode(utf8.encode(password));
+
+            final response =
+                await Supabase.instance.client.from('user').insert({
               'username': username,
-              'password': password,
+              'password':
+                  encodedPassword, 
               'role': _pilihRole
             });
 
-            if (response == null) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserAdmin()));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('User berhasil ditambahkan'),
-                backgroundColor: Colors.pinkAccent.shade100,
-              ));
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Error: ${response.error!.message}'),
-                  backgroundColor: Colors.pinkAccent.shade100));
-            }
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('User berhasil ditambahkan'),
+              backgroundColor: Colors.pinkAccent.shade100,
+            ));
+
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => UserAdmin()));
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.pinkAccent.shade100,
+            ));
           }
         }
       }

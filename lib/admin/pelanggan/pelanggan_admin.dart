@@ -143,7 +143,7 @@ class _PelangganAdminState extends State<PelangganAdmin> {
           controller: searchController,
           decoration: InputDecoration(
             hintText: 'Cari Produk...',
-            hintStyle: TextStyle(color: Colors.white),
+            hintStyle: TextStyle(color: Colors.white, ),
             border: InputBorder.none,
             icon: Icon(Icons.search, color: Colors.white),
           ),
@@ -182,6 +182,12 @@ class _PelangganAdminState extends State<PelangganAdmin> {
                                 style: TextStyle(fontSize: 14)),
                           ],
                         ),
+                        Row(
+                          children: [
+                            Text('Member : ${pelanggan['Member']}',
+                                style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
                       ],
                     ),
                     trailing: Row(
@@ -198,6 +204,8 @@ class _PelangganAdminState extends State<PelangganAdmin> {
                                             Alamat: pelanggan['Alamat'],
                                             NomorTelepon:
                                                 pelanggan['NomorTelepon'],
+                                            Member:
+                                                pelanggan['Member'],
                                           )));
 
                               if (result != null) {
@@ -205,7 +213,8 @@ class _PelangganAdminState extends State<PelangganAdmin> {
                                   pelanggans[index] = {
                                     'NamaPelanggan': result['NamaPelanggan'],
                                     'Alamat': result['Alamat'],
-                                    'NomorTelepon': result['NomorTelepon']
+                                    'NomorTelepon': result['NomorTelepon'],
+                                    'Member': result['Member'],
                                   };
                                 });
                               }

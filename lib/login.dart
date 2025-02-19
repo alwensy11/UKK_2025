@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:kasir_pl1/admin/beranda_admin.dart';
 import 'package:kasir_pl1/petugas/beranda_petugas.dart';
@@ -54,30 +55,33 @@ class HalamanLogin extends StatelessWidget {
               .from('user')
               .select()
               .eq('username', _usernameController.text)
-              .eq('password', _passwordController.text)
               .single();
 
-          if (result != result.isEmpty) {
-            String role = result['role'];
+          if (result != null) {
+            String storedEncodedPassword = result['password'];
+            String decodedPassword =
+                utf8.decode(base64Decode(storedEncodedPassword));
 
-            if (role == 'administrator') {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HalamanBerandaAdmin()));
+            if (decodedPassword == _passwordController.text) {
+              String role = result['role'];
+
+              if (role == 'administrator') {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HalamanBerandaAdmin()));
+              } else if (role == 'petugas') {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HalamanBerandaPetugas()));
+              }
 
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Login berhasil'),
                   backgroundColor: Colors.pinkAccent.shade100));
-            } else if (role == 'petugas') {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HalamanBerandaPetugas()));
-
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Login berhasil'),
-                  backgroundColor: Colors.pinkAccent.shade100));
+            } else {
+              throw Exception('Password salah');
             }
           }
         } catch (e) {

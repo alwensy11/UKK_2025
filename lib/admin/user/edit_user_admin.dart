@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:kasir_pl1/admin/user/user_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,7 +21,6 @@ class EditUserAdmin extends StatefulWidget {
 
 class _EditUserAdminState extends State<EditUserAdmin> {
   String? _pilihRole;
-
   final List<String> _roles = ['administrator', 'petugas'];
 
   final _formKey = GlobalKey<FormState>();
@@ -31,32 +31,35 @@ class _EditUserAdminState extends State<EditUserAdmin> {
   void initState() {
     super.initState();
     usernameController = TextEditingController(text: widget.username);
-    passwordController = TextEditingController(text: widget.password);
+
+    passwordController = TextEditingController(
+        text: utf8.decode(base64Decode(widget.password)));
+
+    _pilihRole = widget.role;
   }
 
   @override
   void dispose() {
-    super.initState();
     usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
   Future<void> EditUser() async {
+    // Hash password dengan Base64 sebelum menyimpan
+    String hashedPassword = base64Encode(utf8.encode(passwordController.text));
+
     final response = await Supabase.instance.client
         .from('user')
         .update({
           'username': usernameController.text,
-          'password': passwordController.text,
+          'password': hashedPassword,
           'role': _pilihRole
         })
         .eq('username', widget.username)
         .select();
 
     if (response == null) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UserAdmin()));
-
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Gagal memperbarui user'),
         backgroundColor: Colors.pinkAccent.shade100,
@@ -72,7 +75,6 @@ class _EditUserAdminState extends State<EditUserAdmin> {
   Future<void> simpanUser() async {
     if (_formKey.currentState!.validate()) {
       await EditUser();
-
       Navigator.pop(context, {
         'username': usernameController.text,
         'password': passwordController.text,
@@ -120,7 +122,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
                 SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(labelText: 'Pilih Role'),
-                  value: _pilihRole, 
+                  value: _pilihRole,
                   onChanged: (String? newValue) {
                     setState(() {
                       _pilihRole = newValue;
@@ -129,7 +131,7 @@ class _EditUserAdminState extends State<EditUserAdmin> {
                   items: _roles.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text('${value}'),
+                      child: Text('$value'),
                     );
                   }).toList(),
                 ),

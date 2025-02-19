@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kasir_pl1/petugas/beranda_petugas.dart';
@@ -27,7 +28,6 @@ class _RiwayatPetugasState extends State<RiwayatPetugas> {
     fetchUser();
   }
 
-  // Fungsi untuk mengambil data penjualan
   Future<void> fetchRiwayatPenjualan() async {
     try {
       final response = await Supabase.instance.client
@@ -46,13 +46,11 @@ class _RiwayatPetugasState extends State<RiwayatPetugas> {
     }
   }
 
-  // Fungsi untuk mengambil informasi user yang login
   Future<void> fetchUser() async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
       setState(() {
-        username =
-            user.email; // Menampilkan email pengguna (atau bisa nama jika ada)
+        username = user.email;
       });
     }
   }
@@ -157,16 +155,16 @@ class _RiwayatPetugasState extends State<RiwayatPetugas> {
                   ),
                   child: ListTile(
                     title: Text(
-                        'Nama : ${detail_penjualann['penjualan']['pelanggan']['NamaPelanggan']}',
-                        style: GoogleFonts.quicksand(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                      'Tanggal : ${detail_penjualann['penjualan']['TanggalPenjualan']}',
+                      style: GoogleFonts.quicksand(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tanggal : ${detail_penjualann['penjualan']['TanggalPenjualan']}',
-                          style: GoogleFonts.roboto(fontSize: 14),
-                        ),
+                            'Nama : ${detail_penjualann['penjualan']['pelanggan']['NamaPelanggan']}',
+                            style: GoogleFonts.roboto(fontSize: 14)),
                         Text(
                             'Nama Produk : ${detail_penjualann['produk']['NamaProduk']}',
                             style: GoogleFonts.roboto(fontSize: 14)),
@@ -175,13 +173,13 @@ class _RiwayatPetugasState extends State<RiwayatPetugas> {
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
                         Text(
-                          'Subtotal : Rp ${detail_penjualann['Subtotal'] ?? 'Subtotal tidak tersedia'}',
+                          'Subtotal : Rp ${NumberFormat('#,###').format(detail_penjualann['Subtotal']) ?? 'Subtotal tidak tersedia'}',
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
-                        Text(
-                          'Nama Kasir : ${username}',
-                          style: GoogleFonts.roboto(fontSize: 14),
-                        ),
+                        // Text(
+                        //   'Nama Kasir : ${username}',
+                        //   style: GoogleFonts.roboto(fontSize: 14),
+                        // ),
                       ],
                     ),
                   ),

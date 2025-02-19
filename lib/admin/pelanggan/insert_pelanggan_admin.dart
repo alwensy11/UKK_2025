@@ -14,42 +14,53 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
   final TextEditingController NamaPelangganController = TextEditingController();
   final TextEditingController AlamatController = TextEditingController();
   final TextEditingController NomorTeleponController = TextEditingController();
+  final TextEditingController MemberController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    Future<void> InsertPelanggan() async {
-      if (_formKey.currentState?.validate() ?? false) {
-        String NamaPelanggan = NamaPelangganController.text;
-        String Alamat = AlamatController.text;
-        String NomorTelepon = NomorTeleponController.text;
+  Future<void> InsertPelanggan() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      String NamaPelanggan = NamaPelangganController.text.trim();
+      String Alamat = AlamatController.text.trim();
+      String NomorTelepon = NomorTeleponController.text.trim();
+      String Member = MemberController.text.trim();
 
-        if (NamaPelanggan.isNotEmpty &&
-            Alamat.isNotEmpty &&
-            NomorTelepon.isNotEmpty) {
-          final response = await Supabase.instance.client
-              .from('pelanggan')
-              .insert({
+      final response = await Supabase.instance.client
+          .from('pelanggan')
+          .select()
+          .eq('NamaPelanggan', NamaPelanggan)
+          .eq('Alamat', Alamat)
+          .eq('NomorTelepon', NomorTelepon)
+          .eq('Member', Member)
+          .single();
+
+      if (response.error == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Pelanggan sudah terdaftar'),
+          backgroundColor: Colors.pinkAccent.shade100,
+        ));
+      } else {
+        if (response.isNotEmpty) {
+          await Supabase.instance.client.from('pelanggan').insert({
             'NamaPelanggan': NamaPelanggan,
             'Alamat': Alamat,
-            'NomorTelepon': NomorTelepon
+            'NomorTelepon': NomorTelepon,
+            'Member': Member,
           });
 
-          if (response == null) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PelangganAdmin()));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Pelanggan berhasil ditambahkan'),
-              backgroundColor: Colors.pinkAccent.shade100,
-            ));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Error: ${response.error!.message}'),
-                backgroundColor: Colors.pinkAccent.shade100));
-          }
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => PelangganAdmin()),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Pelanggan berhasil ditambahkan'),
+            backgroundColor: Colors.pinkAccent.shade100,
+          ));
         }
       }
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent.shade100,
@@ -88,9 +99,21 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
                 TextFormField(
                   controller: NomorTeleponController,
                   decoration: InputDecoration(labelText: 'Nomor Telepon'),
+                  keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Nomor Telepon wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: MemberController,
+                  decoration: InputDecoration(labelText: 'Member'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Member wajib diisi';
                     }
                     return null;
                   },
@@ -99,9 +122,7 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent.shade100),
-                  onPressed: () {
-                    InsertPelanggan();
-                  },
+                  onPressed: InsertPelanggan,
                   child: Text(
                     'Tambah',
                     style: TextStyle(color: Colors.white),
@@ -114,4 +135,8 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
       ),
     );
   }
+}
+
+extension on PostgrestMap {
+  get error => null;
 }
